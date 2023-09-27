@@ -14,55 +14,37 @@ struct ShapeStylesView: View {
         VStack {
             List {
                 Text("default")
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
                 
                 Text("foreground")
-                    .listRowInsets(EdgeInsets())
-                    .listRowBackground(Color.clear)
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .modifier(ResetListBackground())
                     .foregroundStyle(.background)
                     .background(.foreground)
                 Text("background")
-                    .listRowInsets(EdgeInsets())
-                    .listRowBackground(Color.clear)
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .modifier(ResetListBackground())
                     .background(.background)
                 Text("link")
-                    .listRowInsets(EdgeInsets())
-                    .listRowBackground(Color.clear)
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .modifier(ResetListBackground())
                     .background(.link)
                 
                 // Material
                 Text("ultraThinMaterial")
-                    .listRowInsets(EdgeInsets())
-                    .listRowBackground(Color.clear)
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .modifier(ResetListBackground())
                     .background(.ultraThinMaterial)
                 Text("thinMaterial")
-                    .listRowInsets(EdgeInsets())
-                    .listRowBackground(Color.clear)
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .modifier(ResetListBackground())
                     .background(.thinMaterial)
                 Text("regularMaterial")
-                    .listRowInsets(EdgeInsets())
-                    .listRowBackground(Color.clear)
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .modifier(ResetListBackground())
                     .background(.regularMaterial)
                 Text("thickMaterial")
-                    .listRowInsets(EdgeInsets())
-                    .listRowBackground(Color.clear)
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .modifier(ResetListBackground())
                     .background(.thickMaterial)
                 Text("ultraThickMaterial")
-                    .listRowInsets(EdgeInsets())
-                    .listRowBackground(Color.clear)
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .modifier(ResetListBackground())
                     .background(.ultraThickMaterial)
                 Text("bar")
-                    .listRowInsets(EdgeInsets())
-                    .listRowBackground(Color.clear)
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .modifier(ResetListBackground())
                     .background(.bar)
             }
             .listRowSpacing(8)
@@ -86,6 +68,18 @@ struct ShapeStylesView: View {
                     Text("indigo").tag(Color.indigo)
                 }
             }
+        }
+    }
+}
+
+private extension ShapeStylesView {
+    struct ResetListBackground: ViewModifier {
+        func body(content: Content) -> some View {
+            content
+                .padding(.horizontal)
+                .listRowInsets(EdgeInsets())
+                .listRowBackground(Color.clear)
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
         }
     }
 }
