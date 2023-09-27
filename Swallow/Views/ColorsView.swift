@@ -7,11 +7,10 @@
 
 import SwiftUI
 
-struct DemoColorView: View {
+struct ColorsView: View {
+    @Environment(\.colorScheme) var colorScheme
     var groups: [DemoColorGroup] = Configs.demoColorGroups
     
-    @Environment(\.colorScheme) var colorScheme
-    @State var pickedColorScheme: ColorScheme = .light
     @State var pickedGroupIDs: [String] = []
     
     var filteredGroups: [DemoColorGroup] {
@@ -23,21 +22,12 @@ struct DemoColorView: View {
     
     var body: some View {
         VStack {
-            Picker("Color Scheme", selection: $pickedColorScheme) {
-                Text("Light").tag(ColorScheme.light)
-                Text("Dark").tag(ColorScheme.dark)
-            }
-            .pickerStyle(.segmented)
-            .padding()
-            
             groupFilterView()
             
             groupListView()
         }
-        .preferredColorScheme(pickedColorScheme)
-        .onAppear {
-            pickedColorScheme = colorScheme
-        }
+        .navigationTitle("Colors")
+        .navigationBarTitleDisplayMode(.inline)
     }
     
     @ViewBuilder
@@ -47,7 +37,7 @@ struct DemoColorView: View {
                 Section(group.description.uppercased()) {
                     ForEach(group.items) { item in
                         Group {
-                            if pickedColorScheme == .light {
+                            if colorScheme == .light {
                                 Text(item.description)
                                     .foregroundStyle(item.textLightColor)
                             } else {
@@ -63,7 +53,7 @@ struct DemoColorView: View {
             }
         }
         .headerProminence(.increased)
-        .listRowSpacing(5)
+        .listRowSpacing(8)
         .listStyle(.insetGrouped)
     }
     
@@ -89,17 +79,17 @@ struct DemoColorView: View {
                                 .fill(Color.accentColor)
                         } else {
                             RoundedRectangle(cornerRadius: 8)
-                                .fill(Color(uiColor: .secondarySystemBackground))
+                                .fill(.bar)
                         }
                     }
                 }
             }
         }
-        .padding([.horizontal, .bottom])
+        .padding([.horizontal, .top])
         .scrollIndicators(.hidden)
     }
 }
 
 #Preview {
-    DemoColorView()
+    ColorsView()
 }

@@ -8,7 +8,7 @@
 import SwiftUI
 
 
-struct DemoFontView: View {
+struct FontsView: View {
     var fontSizes: [DemoFontSize] = Configs.demoFontSizes
     var fontWeights: [DemoFontWeight] = Configs.demoFontWeights
     
@@ -31,24 +31,24 @@ struct DemoFontView: View {
     
     var body: some View {
         VStack {
-            HStack {
-                Picker("View Type", selection: $pickedGroupType) {
-                    ForEach(GroupType.allCases, id: \.rawValue) { type in
-                        Text(type.rawValue).tag(type)
-                    }
+            Picker("View Type", selection: $pickedGroupType) {
+                ForEach(GroupType.allCases, id: \.rawValue) { type in
+                    Text(type.rawValue).tag(type)
                 }
-                .pickerStyle(.segmented)
-                .padding()
-                
-                Spacer()
             }
+            .pickerStyle(.segmented)
+            .padding()
             
             if pickedGroupType == .size {
                 groupByFontView()
             } else {
                 groupByWeightView()
             }
+            
+            Spacer()
         }
+        .navigationTitle("Font")
+        .navigationBarTitleDisplayMode(.inline)
     }
     
     @ViewBuilder
@@ -73,13 +73,13 @@ struct DemoFontView: View {
                                 .fill(Color.accentColor)
                         } else {
                             RoundedRectangle(cornerRadius: 8)
-                                .fill(Color(uiColor: .secondarySystemBackground))
+                                .fill(.bar)
                         }
                     }
                 }
             }
         }
-        .padding([.horizontal, .bottom])
+        .padding([.horizontal])
         .scrollIndicators(.hidden)
         
         List {
@@ -94,7 +94,7 @@ struct DemoFontView: View {
             }
         }
         .headerProminence(.increased)
-        .listRowSpacing(5)
+        .listRowSpacing(8)
         .listStyle(.insetGrouped)
     }
     
@@ -120,13 +120,13 @@ struct DemoFontView: View {
                                 .fill(Color.accentColor)
                         } else {
                             RoundedRectangle(cornerRadius: 8)
-                                .fill(Color(uiColor: .secondarySystemBackground))
+                                .fill(.bar)
                         }
                     }
                 }
             }
         }
-        .padding([.horizontal, .bottom])
+        .padding([.horizontal])
         .scrollIndicators(.hidden)
         
         List {
@@ -141,7 +141,7 @@ struct DemoFontView: View {
             }
         }
         .headerProminence(.increased)
-        .listRowSpacing(5)
+        .listRowSpacing(8)
         .listStyle(.insetGrouped)
     }
     
@@ -152,5 +152,5 @@ struct DemoFontView: View {
 }
 
 #Preview {
-    DemoFontView()
+    FontsView()
 }

@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct DemoGradientView: View {
+struct GradientsView: View {
     private var unitPoints: [(point: UnitPoint, description: String)] = [
         (point: .topLeading, description: "topLeading"),
         (point: .top, description: "top"),
@@ -30,29 +30,21 @@ struct DemoGradientView: View {
     @State private var pickedGradientType: GradientType = .linear
     @State private var enableLocation: Bool = false
     
-    // linear
     @State private var pickedStartPoint: UnitPoint = .top
     @State private var pickedEndPoint: UnitPoint = .bottom
     
-    // radial
-    private static let minRadius: CGFloat = 0
-    private static let maxRadius: CGFloat = 1000
-    
     @State private var pickedRadialCenterPoint: UnitPoint = .center
-    @State private var pickedStartRadius: CGFloat = minRadius
-    @State private var pickedEndRadius: CGFloat = maxRadius / 2
-    
-    // angle
-    private static let minAngle: Double = 0
-    private static let maxAngle: Double = 360
+    @State private var pickedStartRadius: CGFloat = 0
+    @State private var pickedEndRadius: CGFloat = 500
     
     @State private var pickedAngleCenterPoint: UnitPoint = .center
-    @State private var pickedStartAngle: Double = minRadius
-    @State private var pickedEndAngle: Double = maxRadius
+    @State private var pickedStartAngle: Double = 0
+    @State private var pickedEndAngle: Double = 360
     
     private var colors: [Color] {
         stopComponents.compactMap { $0.color }
     }
+    
     private var stops: [Gradient.Stop] {
         stopComponents.compactMap { .init(color: $0.color, location: $0.location) }
     }
@@ -99,9 +91,8 @@ struct DemoGradientView: View {
                     showSettingsView = true
                 } label: {
                     Text("Set Gradient")
-                        .frame(minHeight: 30)
                 }
-                .buttonStyle(.borderedProminent)
+                .buttonStyle(.bordered)
             }
         }
         .onTapGesture {
@@ -115,6 +106,8 @@ struct DemoGradientView: View {
             // TODO: value ".visble" not work
                 .presentationDragIndicator(.visible)
         }
+        .navigationTitle("Gradients")
+        .navigationBarTitleDisplayMode(.inline)
     }
     
     @ViewBuilder
@@ -155,7 +148,7 @@ struct DemoGradientView: View {
                     
                     colorsParamterView()
                 }
-                .listRowSpacing(5)
+                .listRowSpacing(8)
                 
                 Spacer()
                 
@@ -220,27 +213,17 @@ struct DemoGradientView: View {
         HStack {
             Text("Start Radius")
             Spacer()
-            Slider(value: $pickedStartRadius, in: DemoGradientView.minRadius...DemoGradientView.maxRadius) {
-                Text("\(pickedStartRadius, format: .number.precision(.fractionLength(0)))")
-            } minimumValueLabel: {
-                Text("\(DemoGradientView.minRadius, format: .number.precision(.fractionLength(0)))")
-            } maximumValueLabel: {
-                Text("\(DemoGradientView.maxRadius, format: .number.precision(.fractionLength(0)))")
-            }
-            .frame(width: 200)
+            TextField("", value: $pickedStartRadius, formatter: NumberFormatter())
+                .textFieldStyle(.roundedBorder)
+                .frame(width: 80)
         }
         
         HStack {
             Text("End Radius")
             Spacer()
-            Slider(value: $pickedEndRadius, in: DemoGradientView.minRadius...DemoGradientView.maxRadius) {
-                Text("\(pickedStartRadius, format: .number.precision(.fractionLength(0)))")
-            } minimumValueLabel: {
-                Text("\(DemoGradientView.minRadius, format: .number.precision(.fractionLength(0)))")
-            } maximumValueLabel: {
-                Text("\(DemoGradientView.maxRadius, format: .number.precision(.fractionLength(0)))")
-            }
-            .frame(width: 200)
+            TextField("", value: $pickedEndRadius, formatter: NumberFormatter())
+                .textFieldStyle(.roundedBorder)
+                .frame(width: 80)
         }
     }
     
@@ -259,27 +242,17 @@ struct DemoGradientView: View {
         HStack {
             Text("Start Angle")
             Spacer()
-            Slider(value: $pickedStartAngle, in: DemoGradientView.minAngle...DemoGradientView.maxAngle) {
-                Text("\(pickedStartRadius, format: .number.precision(.fractionLength(0)))")
-            } minimumValueLabel: {
-                Text("\(DemoGradientView.minAngle, format: .number.precision(.fractionLength(0)))")
-            } maximumValueLabel: {
-                Text("\(DemoGradientView.maxAngle, format: .number.precision(.fractionLength(0)))")
-            }
-            .frame(width: 200)
+            TextField("", value: $pickedStartAngle, formatter: NumberFormatter())
+                .textFieldStyle(.roundedBorder)
+                .frame(width: 80)
         }
         
         HStack {
             Text("End Angle")
             Spacer()
-            Slider(value: $pickedEndAngle, in: DemoGradientView.minAngle...DemoGradientView.maxAngle) {
-                Text("\(pickedStartRadius, format: .number.precision(.fractionLength(0)))")
-            } minimumValueLabel: {
-                Text("\(DemoGradientView.minAngle, format: .number.precision(.fractionLength(0)))")
-            } maximumValueLabel: {
-                Text("\(DemoGradientView.maxAngle, format: .number.precision(.fractionLength(0)))")
-            }
-            .frame(width: 200)
+            TextField("", value: $pickedEndAngle, formatter: NumberFormatter())
+                .textFieldStyle(.roundedBorder)
+                .frame(width: 80)
         }
     }
     
@@ -287,7 +260,7 @@ struct DemoGradientView: View {
     private func colorsParamterView() -> some View {
         Section {
             ForEach(stopComponents.indices, id: \.self) { index in
-                Group {
+                VStack {
                     if enableLocation {
                         HStack(spacing: 20) {
                             RoundedRectangle(cornerRadius: 5)
@@ -317,6 +290,7 @@ struct DemoGradientView: View {
                     })
                 }
             }
+            .onMove(perform: move)
         } header: {
             HStack(spacing: 25) {
                 Text("\(stopComponents.count) colors")
@@ -341,6 +315,12 @@ struct DemoGradientView: View {
         .listRowSeparator(.hidden)
     }
     
+    func move(from source: IndexSet, to destination: Int) {
+        withAnimation(.snappy) {
+            self.stopComponents.move(fromOffsets: source, toOffset: destination)
+        }
+    }
+    
     enum GradientType: String, CaseIterable {
         case linear = "Linear"
         case radial = "Radial"
@@ -349,5 +329,5 @@ struct DemoGradientView: View {
 }
 
 #Preview {
-    DemoGradientView()
+    GradientsView()
 }
